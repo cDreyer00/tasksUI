@@ -1,30 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="tasksUI.MainPage">
-
-    <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            >
-            
-            <Label
-                x:Name="Label"
-                BackgroundColor="White"
-                TextColor="Black"
-                Text="Task"
-                FontSize="30"
-                HorizontalOptions="Fill"
-                HorizontalTextAlignment="Center"
-                />
-
-            <Editor
-                   Text="123"
-                TextChanged="OnTextChanged"
-                />
-
-        </VerticalStackLayout>
-    </ScrollView>
-
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="tasksUI.MainPage"
+    Title="">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="30" Padding="30,30">
+            </VerticalStackLayout>
+        </ScrollView>
+        <BoxView 
+            Color="Blue"
+            Grid.Row="1"/>
+    </Grid>
 </ContentPage>
