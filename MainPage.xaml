@@ -1,17 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage 
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="tasksUI.MainPage"
-    Title=""
-    BackgroundColor="Black">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="tasksUI.MainPage"
+             Title=""
+             BackgroundColor="Black">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="100" />
         </Grid.RowDefinitions>
         <ScrollView Grid.Row="0">
-            <VerticalStackLayout Spacing="30" Padding="30,30" x:Name="TasksStackLayout">
+            <VerticalStackLayout x:Name="TasksStackLayout"
+                                 Spacing="30" 
+                                 Padding="20,30">
+                <!--<Grid ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+                    <Button />
+                    <Border Grid.Column="1"
+                            Stroke="#3987E1"
+                            StrokeThickness="4"
+                            Background="#2B0B98">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+                        <Label TextColor="White"
+                               FontSize="14"
+                               VerticalTextAlignment="Center"
+                               Padding="10,5"/>
+                    </Border>
+                    <Button Grid.Column="2"/>
+                </Grid>-->
             </VerticalStackLayout>
         </ScrollView>
         <Grid Grid.Row="1">
@@ -19,26 +41,19 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
-            <Editor 
-                x:Name="TaskTitleInput" 
-                Placeholder="add new task..."
-                VerticalTextAlignment="Center"
-                Margin="20"
-                BackgroundColor="White"
-                TextColor="Black"                
-                />
-            <Button
-                Grid.Column="1"
-                Margin="10"
-                Clicked="HandleAddTask"/>
-            <!--<Label
-                Text="+"
-                HorizontalTextAlignment="Center"
-                VerticalTextAlignment="Center"
-                FontSize="70"
-                Grid.Column="1"
-                TextColor="Black"/>-->
-
+            <Editor x:Name="TaskTitleInput" 
+                    Placeholder="add new task..."
+                    VerticalTextAlignment="Center"
+                    Margin="20"
+                    BackgroundColor="White"
+                    TextColor="Black"/>
+            <Button Grid.Column="1"
+                    Margin="0,0,20,0"
+                    Clicked="HandleAddTask"
+                    FontSize="70"
+                    WidthRequest="100"
+                    HeightRequest="60"
+                    Text="+"/>
         </Grid>
     </Grid>
 </ContentPage>
