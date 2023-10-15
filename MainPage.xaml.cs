@@ -16,10 +16,34 @@ namespace tasksUI
 
         void HandleAddTask(object sender, EventArgs e)
         {
-            TaskHolder th = new(TaskTitleInput.Text);
+            if (TaskTitleInput.Text == null || TaskTitleInput.Text == "")
+                return;
+
+            TaskHolder th = CreateTask(TaskTitleInput.Text);
             tasks.Add(th);
-            TasksStackLayout.Add(th.TaskModel);
+            TasksStackLayout.Insert(0, th.GetModel());
+            TasksStackLayout.Children.Reverse();
             TaskTitleInput.Text = "";
+        }
+
+        void HandleDeleteTask(TaskHolder task)
+        {
+            tasks.Remove(task);
+            TasksStackLayout.Remove(task.GetModel());
+        }
+
+        void HandleCompleteTask(TaskHolder task)
+        {
+            task.Done = !task.Done;
+            task.GetModel().BackgroundColor = task.Done ? new Color(128, 0, 128) : null;
+        }
+
+        TaskHolder CreateTask(string taskName)
+        {
+            TaskHolder th = new(taskName);
+            th.onDelete += () => HandleDeleteTask(th);
+            th.onComplete += () => HandleCompleteTask(th);
+            return th;
         }
     }
 
@@ -29,71 +53,68 @@ namespace tasksUI
         public string Title { get; set; }
         public bool Done { get; set; }
 
-        public View TaskModel { get; set; }
+        public event Action onDelete;
+        public event Action onComplete;
+
+        View _taskModel = null;
 
         public TaskHolder(string title)
         {
             Title = title;
-            TaskModel = GetModel;
         }
 
-        View GetModel
+        public View GetModel()
         {
-            get
+            if (_taskModel != null)
+                return _taskModel;
+
+            var grid = new Grid
             {
-                // Grid
-                var grid = new Grid
-                {
-                    ColumnSpacing = 10
-                };
+                ColumnSpacing = 10
+            };
 
-                // Column Definitions
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = 40 });
-                grid.ColumnDefinitions.Add(new ColumnDefinition());
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = 50 });
+            // Column Definitions
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = 40 });
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = 50 });
 
-                // Button 1
-                var button1 = new Button();
-                button1.Clicked += (s, e) => { }; /*delete me*/
+            // Button 1
+            var deleteButton = new Button();
+            deleteButton.Clicked += (s, e) => { onDelete?.Invoke(); };
 
-                // Border
-                var border = new Border
-                {
-                    Stroke = Color.FromHex("#3987E1"),
-                    StrokeThickness = 4,
-                    Background = Color.FromHex("#2B0B98"),
-                    StrokeShape = new RoundRectangle { CornerRadius = 10 }
-                };
-                Grid.SetColumn(border, 1);
+            var completeButton = new Button();
+            Grid.SetColumn(completeButton, 2);
+            completeButton.Clicked += (s, e) => { onComplete?.Invoke(); };
 
-                // Label
-                var label = new Label
-                {
-                    TextColor = new Color(255, 255, 255),
-                    FontSize = 14,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    Padding = new Thickness(10, 5),
-                    Text = Title,                    
-                };
+            // Border
+            var border = new Border
+            {
+                Stroke = Color.FromHex("#3987E1"),
+                StrokeThickness = 4,
+                Background = Color.FromHex("#2B0B98"),
+                StrokeShape = new RoundRectangle { CornerRadius = 10 }
+            };
+            Grid.SetColumn(border, 1);
 
-                border.Content = label;
+            // Label
+            var label = new Label
+            {
+                TextColor = new Color(255, 255, 255),
+                FontSize = 14,
+                VerticalTextAlignment = TextAlignment.Center,
+                Padding = new Thickness(10, 5),
+                Text = Title,
+            };
 
-                // Button 2
-                var button2 = new Button();
-                Grid.SetColumn(button2, 2);
-                button2.Clicked += (s, e) =>
-                {
-                    Done = true;                    
-                    TaskModel.BackgroundColor = new Color(100, 255, 40);
-                };
+            border.Content = label;
 
-                // Adding elements to the Grid
-                grid.Children.Add(button1);
-                grid.Children.Add(border);
-                grid.Children.Add(button2);
+            // Adding elements to the Grid
+            grid.Children.Add(deleteButton);
+            grid.Children.Add(border);
+            grid.Children.Add(completeButton);
 
-                return grid;
-            }
+            _taskModel = grid;
+            return _taskModel;
         }
     }
 }
