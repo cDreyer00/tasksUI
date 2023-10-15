@@ -11,50 +11,48 @@ namespace tasksUI
             InitializeComponent();
             TasksData.Init().Wait();
             foreach (var t in TasksData.StorageTasks)
+            {
                 AddTask(t);
+                UpdateTask(t);
+            }
         }
 
         void AddTask(TaskHolder th)
         {
-            TasksStackLayout.Insert(0, th.GetModel());
-            TasksStackLayout.Children.Reverse();
-        }
-
-        void AddTask(string taskTitle)
-        {
-            TaskHolder th = new(taskTitle);
-            th.onDelete += () => HandleDeleteTask(th);
             th.onComplete += () => HandleCompleteTask(th);
-
-            TasksData.StorageTasks.Add(th);
+            th.onDelete += () => HandleDeleteTask(th);
             TasksStackLayout.Insert(0, th.GetModel());
-            TasksStackLayout.Children.Reverse();
-            TaskTitleInput.Text = "";
-
-            TasksData.SaveTasks();
         }
 
-        void HandleAddTask(object sender, EventArgs e)
+        async void HandleAddTask(object sender, EventArgs e)
         {
             if (TaskTitleInput.Text == null || TaskTitleInput.Text == "")
                 return;
 
-            AddTask(TaskTitleInput.Text);
+            TaskHolder th = new(TaskTitleInput.Text);
+            TasksData.StorageTasks.Add(th);
+            AddTask(th);
+            TaskTitleInput.Text = "";
+
+            await TasksData.SaveTasks();
         }
 
-        void HandleDeleteTask(TaskHolder task)
+        async void HandleDeleteTask(TaskHolder task)
         {
             TasksData.StorageTasks.Remove(task);
             TasksStackLayout.Remove(task.GetModel());
 
-            TasksData.SaveTasks();
+            await TasksData.SaveTasks();
         }
 
-        void HandleCompleteTask(TaskHolder task)
+        async void HandleCompleteTask(TaskHolder task)
         {
             task.Done = !task.Done;
+            UpdateTask(task);
 
-            TasksData.SaveTasks();
+            await TasksData.SaveTasks();
         }
+
+        void UpdateTask(TaskHolder th) => th.GetModel().BackgroundColor = th.Done ? new Color(128, 0, 128) : null;
     }
 }

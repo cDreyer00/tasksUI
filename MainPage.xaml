@@ -11,7 +11,7 @@
         </Grid.RowDefinitions>
         <ScrollView Grid.Row="0">
             <VerticalStackLayout x:Name="TasksStackLayout"
-                                 Spacing="30" 
+                                 Spacing="15" 
                                  Padding="20,30">
             </VerticalStackLayout>
         </ScrollView>
