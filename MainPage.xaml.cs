@@ -6,22 +6,23 @@ namespace tasksUI
 {
     public partial class MainPage : ContentPage
     {
+        List<TaskModel> tasks = new();
         public MainPage()
         {
             InitializeComponent();
-            TasksData.Init().Wait();
-            foreach (var t in TasksData.StorageTasks)
-            {
-                AddTask(t);
-                UpdateTask(t);
-            }
+            TaskService.onRequestFail += OnRequestFail;
         }
 
-        void AddTask(TaskHolder th)
+        void OnRequestFail(HttpRequestMessage message)
+        {
+            TaskTitleInput.Text = message.ToString();
+        }
+
+        void AddTask(TaskModel th)
         {
             th.onComplete += () => HandleCompleteTask(th);
             th.onDelete += () => HandleDeleteTask(th);
-            TasksStackLayout.Insert(0, th.GetModel());
+            TasksStackLayout.Insert(0, th.GetVisualModel());
         }
 
         async void HandleAddTask(object sender, EventArgs e)
@@ -29,30 +30,53 @@ namespace tasksUI
             if (TaskTitleInput.Text == null || TaskTitleInput.Text == "")
                 return;
 
-            TaskHolder th = new(TaskTitleInput.Text);
-            TasksData.StorageTasks.Add(th);
+            TaskModel th = new(TaskTitleInput.Text);
+            TaskService.StorageTasks.Add(th);
             AddTask(th);
             TaskTitleInput.Text = "";
-
-            await TasksData.SaveTasks();
+            
+            tasks.Add(th);
+            await TaskService.SaveTasks(tasks);
         }
 
-        async void HandleDeleteTask(TaskHolder task)
+        async void HandleDeleteTask(TaskModel task)
         {
-            TasksData.StorageTasks.Remove(task);
-            TasksStackLayout.Remove(task.GetModel());
+            TaskService.StorageTasks.Remove(task);
+            TasksStackLayout.Remove(task.GetVisualModel());
 
-            await TasksData.SaveTasks();
+            await TaskService.SaveTasks(tasks);
         }
 
-        async void HandleCompleteTask(TaskHolder task)
+        async void HandleCompleteTask(TaskModel task)
         {
             task.Done = !task.Done;
             UpdateTask(task);
 
-            await TasksData.SaveTasks();
+            await TaskService.SaveTasks(tasks);
         }
 
-        void UpdateTask(TaskHolder th) => th.GetModel().BackgroundColor = th.Done ? new Color(128, 0, 128) : null;
+        void UpdateTask(TaskModel th) => th.GetVisualModel().BackgroundColor = th.Done ? new Color(128, 0, 128) : null;
+
+        async void LoadCache(object sender, EventArgs e)
+        {
+            TasksStackLayout.Children.Clear();
+
+            tasks = await TaskService.GetCachedTasks();
+            foreach (var task in tasks){
+                AddTask(task);
+                UpdateTask(task);
+            }
+        }
+
+        async void LoadDb(object sender, EventArgs e)
+        {
+            TasksStackLayout.Children.Clear();
+
+            tasks = await TaskService.GetDbTasks();
+            foreach (var task in tasks){
+                AddTask(task);
+                UpdateTask(task);
+            }
+        }
     }
 }

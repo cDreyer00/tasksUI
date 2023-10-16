@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="tasksUI.MainPage"
@@ -6,34 +6,47 @@
              BackgroundColor="Black">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition />
+            <RowDefinition Height="100" />
             <RowDefinition Height="100" />
         </Grid.RowDefinitions>
+        <!-- Tasks list -->
         <ScrollView Grid.Row="0">
             <VerticalStackLayout x:Name="TasksStackLayout"
-                                 Spacing="15" 
-                                 Padding="20,30">
-            </VerticalStackLayout>
+                                 Spacing="15"
+                                 Padding="20,30" />
         </ScrollView>
+        <!-- Down input and button -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
-            <Entry x:Name="TaskTitleInput" 
-                    Placeholder="add new task..."
-                    VerticalTextAlignment="Center"
-                    Margin="20"
-                    BackgroundColor="White"
-                    TextColor="Black"
-                    Completed="HandleAddTask"/>
+            <Entry x:Name="TaskTitleInput"
+                   Placeholder="add new task..."
+                   VerticalTextAlignment="Center"
+                   Margin="20"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   Completed="HandleAddTask" />
             <Button Grid.Column="1"
                     Margin="0,0,20,0"
                     Clicked="HandleAddTask"
                     FontSize="70"
                     WidthRequest="100"
                     HeightRequest="60"
-                    Text="+"/>
+                    Text="+" />
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    BackgroundColor="purple" 
+                    Clicked="LoadDb"/>
+            <Button Grid.Column="1" 
+                    Clicked="LoadCache"/>
         </Grid>
     </Grid>
 </ContentPage>

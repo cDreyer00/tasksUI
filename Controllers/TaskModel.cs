@@ -2,23 +2,24 @@ using Microsoft.Maui.Controls.Shapes;
 
 namespace tasksUI
 {
-    public class TaskHolder
+    public class TaskModel
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
         public bool Done { get; set; }
+        public bool LoadedFromDb { get; set; }
 
         public event Action onDelete;
         public event Action onComplete;
 
         View _taskModel = null;
 
-        public TaskHolder(string title)
+        public TaskModel(string title)
         {
             Title = title;
         }
 
-        public View GetModel()
+        public View GetVisualModel()
         {
             if (_taskModel != null)
                 return _taskModel;
