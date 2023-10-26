@@ -10,12 +10,13 @@ namespace tasksUI
         public MainPage()
         {
             InitializeComponent();
-            TaskService.onRequestFail += OnRequestFail;
-        }
 
-        void OnRequestFail(HttpRequestMessage message)
-        {
-            TaskTitleInput.Text = message.ToString();
+            TaskService.LoadTasks(tasks =>
+            {
+                TasksStackLayout.Clear();
+                foreach(var t in tasks)
+                    AddTask(t);
+            });
         }
 
         void AddTask(TaskModel th)
@@ -31,17 +32,17 @@ namespace tasksUI
                 return;
 
             TaskModel th = new(TaskTitleInput.Text);
-            TaskService.StorageTasks.Add(th);
+            TaskService.AddTask(th);
             AddTask(th);
             TaskTitleInput.Text = "";
-            
+
             tasks.Add(th);
             await TaskService.SaveTasks(tasks);
         }
 
         async void HandleDeleteTask(TaskModel task)
         {
-            TaskService.StorageTasks.Remove(task);
+            TaskService.DeleteTask(task);
             TasksStackLayout.Remove(task.GetVisualModel());
 
             await TaskService.SaveTasks(tasks);
@@ -50,33 +51,9 @@ namespace tasksUI
         async void HandleCompleteTask(TaskModel task)
         {
             task.Done = !task.Done;
-            UpdateTask(task);
+            TaskService.UpdateTask(task);
 
             await TaskService.SaveTasks(tasks);
-        }
-
-        void UpdateTask(TaskModel th) => th.GetVisualModel().BackgroundColor = th.Done ? new Color(128, 0, 128) : null;
-
-        async void LoadCache(object sender, EventArgs e)
-        {
-            TasksStackLayout.Children.Clear();
-
-            tasks = await TaskService.GetCachedTasks();
-            foreach (var task in tasks){
-                AddTask(task);
-                UpdateTask(task);
-            }
-        }
-
-        async void LoadDb(object sender, EventArgs e)
-        {
-            TasksStackLayout.Children.Clear();
-
-            tasks = await TaskService.GetDbTasks();
-            foreach (var task in tasks){
-                AddTask(task);
-                UpdateTask(task);
-            }
         }
     }
 }

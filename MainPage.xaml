@@ -8,7 +8,6 @@
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="100" />
-            <RowDefinition Height="100" />
         </Grid.RowDefinitions>
         <!-- Tasks list -->
         <ScrollView Grid.Row="0">
@@ -36,17 +35,6 @@
                     WidthRequest="100"
                     HeightRequest="60"
                     Text="+" />
-        </Grid>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0"
-                    BackgroundColor="purple" 
-                    Clicked="LoadDb"/>
-            <Button Grid.Column="1" 
-                    Clicked="LoadCache"/>
         </Grid>
     </Grid>
 </ContentPage>

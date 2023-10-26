@@ -7,7 +7,7 @@ namespace tasksUI
         public Guid Id { get; set; }
         public string Title { get; set; }
         public bool Done { get; set; }
-        public bool LoadedFromDb { get; set; }
+        public bool Linked { get; set; } = false;
 
         public event Action onDelete;
         public event Action onComplete;
